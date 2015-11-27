@@ -49,7 +49,7 @@ class Process::GenerateImageData
         image = OpenCV::CvMat.load(image_path)
 
         gray = image.BGR2GRAY
-        contours = gray.smooth(:blur, 2, 7).canny(60, 100).find_contours(:mode => OpenCV::CV_RETR_CCOMP, :method => OpenCV::CV_CHAIN_APPROX_SIMPLE)
+        contours = gray.smooth(:blur, 2, 7).canny(60, 130).find_contours(:mode => OpenCV::CV_RETR_CCOMP, :method => OpenCV::CV_CHAIN_APPROX_SIMPLE)
 
         contour_image = gray.clone.clear
         contour_image.draw_contours!(contours, CvColor::White, CvColor::White, 2,
