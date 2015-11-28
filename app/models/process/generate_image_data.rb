@@ -49,15 +49,21 @@ class Process::GenerateImageData
         image = OpenCV::CvMat.load(image_path)
 
         gray = image.BGR2GRAY
-        contours = gray.smooth(:blur, 2, 7).canny(60, 130).find_contours(:mode => OpenCV::CV_RETR_CCOMP, :method => OpenCV::CV_CHAIN_APPROX_SIMPLE)
 
-        contour_image = gray.clone.clear
-        contour_image.draw_contours!(contours, CvColor::White, CvColor::White, 2,
-                               :thickness => 2, :line_type => :aa)
+        begin
+          contours = gray.smooth(:blur, 3, 7)
+            .canny(70, 150).find_contours(:mode => OpenCV::CV_RETR_EXTERNAL, :method => OpenCV::CV_CHAIN_APPROX_SIMPLE)
 
-        moments = CvMoments.new(contour_image, true).hu.to_a
+          contour_image = gray.clone.clear
+          contour_image.draw_contours!(contours, CvColor::White, CvColor::White, 2,
+                                 :thickness => 2, :line_type => :aa)
 
-        csv << moments
+          moments = CvMoments.new(contour_image, true).hu.to_a
+            csv << moments
+
+        rescue
+          puts "contours could not be generated for #{image_path}"
+        end
       end
     end
   end
