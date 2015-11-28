@@ -34,8 +34,10 @@ class Process::GenerateImageData
     subfolders.each do |subfolder|
       subfolder_images = Dir.entries(subfolder).select{|file_name| !File.directory?(file_name) && file_name[0] != '.' }
         .map{ |file_name| subfolder + '/' + file_name }
-      subfoler_training_images, subfolder_test_images = subfolder_images.each_slice( (subfolder_images.size/2.0).round ).to_a
-      training_images = training_images + subfoler_training_images
+      subfolder_training_images = subfolder_images.each_with_index.map { |img, idx| img if idx % 4 != 0 }.compact
+      subfolder_test_images = subfolder_images.each_with_index.map { |img, idx| img if idx % 4 == 0 }.compact
+
+      training_images = training_images + subfolder_training_images
       test_images = test_images + subfolder_test_images
     end
 
@@ -52,7 +54,7 @@ class Process::GenerateImageData
 
         begin
           contours = gray.smooth(:blur, 3, 7)
-            .canny(70, 150).find_contours(:mode => OpenCV::CV_RETR_EXTERNAL, :method => OpenCV::CV_CHAIN_APPROX_SIMPLE)
+            .canny(70, 150).find_contours(:mode => OpenCV::CV_RETR_CCOMP, :method => OpenCV::CV_CHAIN_APPROX_NONE)
 
           contour_image = gray.clone.clear
           contour_image.draw_contours!(contours, CvColor::White, CvColor::White, 2,
