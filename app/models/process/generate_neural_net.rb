@@ -1,6 +1,6 @@
 class Process::GenerateNeuralNet
   SERILIZED_CLASSIFIER_FILE = File.join(Rails.root, 'lib/assets/serialized_classifiers/neural_net_classifier')
-  def self.generate(training_iterations = 500, hidden_layers = [1000, 100, 10])
+  def self.generate(training_iterations = 100, hidden_layers = [1000, 100, 10])
 
     bird_training_data = CSV.read(Process::GenerateImageData::BIRD_TRAINING_DATA_FILE)
 
