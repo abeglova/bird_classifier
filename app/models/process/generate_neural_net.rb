@@ -42,15 +42,15 @@ class Process::GenerateNeuralNet
 
     puts "Got #{bird_data_correct/bird_test_data.length.to_f} correct"
 
-    contol_test_data = CSV.read(Process::GenerateImageData::CONTROL_TEST_DATA_FILE)
+    control_test_data = CSV.read(Process::GenerateImageData::CONTROL_TEST_DATA_FILE)
 
     control_data_correct = 0
 
-    contol_test_data.each do |input|
+    control_test_data.each do |input|
       result = classifier.eval(input.to_a.map(&:to_f))
       control_data_correct += 1 unless result
     end
 
-    puts "Got #{control_data_correct/contol_test_data.length.to_f} correct"
+    puts "Got #{control_data_correct/control_test_data.length.to_f} correct"
   end
 end
