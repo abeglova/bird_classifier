@@ -1,25 +1,34 @@
-<table>
-  <thead>
-    <tr>
-      <th>Image</th>
-      <th>Is it a bird?</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @images.zip(@results) do |image, result| %>
-      <tr>
-        <td>
-          <% if image.path.present? %>
-            <%= image_tag image.url, height: 100 %>
-          <% end %>
-        </td>
-        <td>
-          <%= result ? "Yes" : "No" %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-<a href="<%=demo_index_path %>" class="transparent_hover">
-  <button class="link_button"> Try Again </button>
-</a>
+<div class="container">
+  <h1 class=text-center>Bird Classifier: Results</h1>
+  <table class="table table-striped">
+    <div class="container">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Is it a bird?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @images.zip(@results) do |image, result| %>
+          <tr>
+            <td>
+              <span class="center-block">
+                <% if image.path.present? %>
+                  <%= image_tag image.url, height: 100 %>
+                <% end %>
+              </span>
+            </td>
+            <td>
+              <span class="text-center"><%= result ? "Yes" : "No" %></span>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div class="text-center">
+    <a href="<%=demo_index_path %>" class="transparent_hover">
+      <button class="btn btn-primary btn-lg" id="back_button"> Back </button>
+    </a>
+  </div>
+</div>
