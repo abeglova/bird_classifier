@@ -53,4 +53,10 @@ Rails.application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
+
+  root 'demo#index'
+  resources :demo, only: [:index] do
+    put 'results',  on: :collection
+  end
+
 end

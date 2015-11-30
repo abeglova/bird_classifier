@@ -1,0 +1,6 @@
+<h1>Bird Classifier</h1>
+<%= form_for "demo_form", url: results_demo_index_path, method: :put do |f| %>
+ <label class="large_label">Files</label>
+  <%= f.file_field :images, multiple: "true"%>
+  <%= f.submit("Classify") %>
+<%end%>
