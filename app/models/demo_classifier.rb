@@ -13,7 +13,7 @@ class DemoClassifier
   validates :image_files, presence: true
 
   def initialize
-    File.open(Process::GenerateNeuralNet::SERILIZED_CLASSIFIER_FILE) do |f|
+    File.open('lib/assets/serialized_classifiers/neural_net_classifier') do |f|
       @classifier = Marshal.load(f)
     end
   end
