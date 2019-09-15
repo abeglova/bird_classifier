@@ -33,6 +33,21 @@ class Process::GenerateImageDataFiles
     generate_image_data_file(control_images, ADDITIONAL_CONTROL_DATA_FILE)
   end
 
+  def self.generate_image_data_file(image_array, file)
+    CSV.open(file, 'wb') do |csv|
+      image_array.each do |image_path|
+        data_for_image = ::ImageData.extract(image_path)
+
+        if data_for_image
+          csv << data_for_image
+        else
+          puts "image data could not be generated for #{image_path}"
+        end
+      end
+    end
+  end
+  private_class_method :generate_image_data_file
+
   def self.generate_image_lists(subfolders)
     training_images = []
     test_images = []
@@ -56,22 +71,10 @@ class Process::GenerateImageDataFiles
 
     [training_images, test_images]
   end
-
-  def self.generate_image_data_file(image_array, file)
-    CSV.open(file, 'wb') do |csv|
-      image_array.each do |image_path|
-        data_for_image = ::ImageData.extract(image_path)
-
-        if data_for_image
-          csv << data_for_image
-        else
-          puts "image data could not be generated for #{image_path}"
-        end
-      end
-    end
-  end
+  private_class_method :generate_image_lists
 
   def self.ignore_system_files(file_array)
     file_array.select { |file_name| !File.directory?(file_name) && file_name[0] != '.' }
   end
+  private_class_method :ignore_system_files
 end

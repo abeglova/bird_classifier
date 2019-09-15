@@ -1,12 +1,15 @@
 class DemoController < ApplicationController
-  def index
-  end
+  def new; end
 
   def results
-    classifier = ::DemoClassifier.new
+    classifier = ::DemoClassifier.new(params[:demo_form][:classifier])
     classifier.image_files = params[:demo_form][:images]
 
-    @results = classifier.classify
-    @images = classifier.image_files
+    if classifier.valid?
+      @results = classifier.classify
+      @images = classifier.image_files
+    else
+      render :new
+    end
   end
 end

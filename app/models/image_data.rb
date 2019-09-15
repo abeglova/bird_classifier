@@ -10,23 +10,20 @@ module ImageData
     image = image.BGR2GRAY.smooth(:blur, 3, 7)
 
     data_for_image = []
-    begin
-      data_for_image = get_hu_moments(image)
-      [2, 4, 10].each do |slice_size|
-        width = mat.cols / slice_size
-        height = mat.rows / slice_size
+    data_for_image = get_hu_moments(image)
+    [2, 4, 10].each do |slice_size|
+      width = mat.cols / slice_size
+      height = mat.rows / slice_size
 
-        0.upto(slice_size - 1) do |x|
-          0.upto(slice_size - 1) do |y|
-            image.set_roi(CvRect.new(x * width, y * height, width, height))
-            (data_for_image << get_hu_moments(image)).flatten!
-          end
+      0.upto(slice_size - 1) do |x|
+        0.upto(slice_size - 1) do |y|
+          image.set_roi(CvRect.new(x * width, y * height, width, height))
+          (data_for_image << get_hu_moments(image)).flatten!
         end
       end
-      return data_for_image
-    rescue
-      return nil
     end
+
+    data_for_image
   end
 
   def self.get_hu_moments(image)
@@ -40,8 +37,9 @@ module ImageData
         line_type: :aa)
 
       return CvMoments.new(contour_image, true).hu.to_a
-    rescue
+    rescue TypeError
       return [0, 0, 0, 0, 0, 0, 0]
     end
   end
+  private_class_method :get_hu_moments
 end

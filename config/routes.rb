@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  root 'demo#index'
-  resources :demo, only: [:index] do
+  root 'demo#new'
+  resources :demo, only: [:new] do
     put 'results', on: :collection
   end
 end

@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'rails'
-gem "ruby-opencv"
-gem "ai4r"
-gem "rb-libsvm"
-gem "jquery-rails"
-gem 'carrierwave', github: 'carrierwaveuploader/carrierwave', branch: 'master'
+gem 'ai4r', '1.13'
+gem 'carrierwave', '2.0.1'
+gem 'jquery-rails', '4.3.5'
+gem 'rails', '6.0.0'
+gem 'rb-libsvm', '1.4.3'
+gem 'ruby-opencv', '0.0.18'

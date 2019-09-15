@@ -1,10 +1,22 @@
 <div class="container">
+  <%= if flash %>
+    <div class="alert alert-danger">
+      <% flash.each do |key, value| %>
+        <%= content_tag(:div, value, :class => "flash #{key}") %>
+      <% end %>
+    </div>
+
   <h1>Bird Classifier</h1>
   <%= form_for "demo_form", url: results_demo_index_path, method: :put,
     html: { id: "demo_form"} do |f| %>
     <div class = "form-group">
       <label>Images</label>
       <%= f.file_field :images, multiple: "true"%>
+    </div>
+    <div class = "form-group">
+      <label>Classifier</label>
+      <br>
+      <%=  f.select :classifier, options_for_select(['neural net', 'svn']) %>
     </div>
     <div class = "form-group">
       <%= f.submit("Classify", class: "btn btn-primary btn-lg") %>

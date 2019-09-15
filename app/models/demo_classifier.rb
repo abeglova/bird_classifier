@@ -6,14 +6,20 @@ class DemoClassifier
   include ::ActiveModel::Validations
   extend CarrierWave::Mount
 
+  attr_reader :classifier
   mount_uploaders :image_files, ImageFileUploader
 
-  attr_accessor :classifier
-
   validates :image_files, presence: true
+  validates :classifier, presence: true
 
-  def initialize
-    File.open('lib/assets/serialized_classifiers/neural_net_classifier') do |f|
+  def initialize(classifier_type)
+    serialized_classifier_file = if classifier_type == 'neural net'
+      'lib/assets/serialized_classifiers/neural_net_classifier'
+    elsif classifier_type == 'svm'
+      'lib/assets/serialized_classifiers/svm_classifier'
+    end
+
+    File.open(serialized_classifier_file) do |f|
       @classifier = Marshal.load(f)
     end
   end
