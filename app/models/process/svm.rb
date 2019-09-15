@@ -6,8 +6,8 @@ class Process::Svm
   SERILIZED_CLASSIFIER_FILE = File.join(Rails.root,
     'lib/assets/serialized_classifiers/svm_classifier')
 
-  def self.generate
-    bird_training_data = CSV.read(Process::GenerateImageDataFiles::BIRD_TRAINING_DATA_FILE)
+  def self.create_or_update(bird_training_data_file:, control_training_data_file:)
+    bird_training_data = CSV.read(bird_training_data_file)
 
     bird_training_data.each do |row|
       row.map!(&:to_f)
@@ -15,7 +15,7 @@ class Process::Svm
 
     bird_training_data.map! { |row| row << true }
 
-    control_training_data = CSV.read(Process::GenerateImageDataFiles::CONTROL_TRAINING_DATA_FILE)
+    control_training_data = CSV.read(control_training_data_file)
     control_training_data.each do |row|
       row.map!(&:to_f)
     end
@@ -45,10 +45,10 @@ class Process::Svm
     classifier.save(SERILIZED_CLASSIFIER_FILE)
   end
 
-  def self.test
+  def self.test(bird_test_data_file:, control_test_data_file:)
     classifier = Model.load(SERILIZED_CLASSIFIER_FILE)
 
-    bird_test_data = CSV.read(Process::GenerateImageDataFiles::BIRD_TEST_DATA_FILE)
+    bird_test_data = CSV.read(bird_test_data_file)
 
     bird_data_correct = 0
 
@@ -60,7 +60,7 @@ class Process::Svm
 
     puts "Got #{bird_data_correct / bird_test_data.length.to_f} correct for control images"
 
-    control_test_data = CSV.read(Process::GenerateImageDataFiles::CONTROL_TEST_DATA_FILE)
+    control_test_data = CSV.read(control_test_data_file)
 
     control_data_correct = 0
 

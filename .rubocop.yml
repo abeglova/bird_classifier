@@ -5,3 +5,5 @@ AllCops:
     - 'config/environments/development.rb'
     - 'config/application.rb'
     - 'bin/setup'
+    - 'spec/rails_helper.rb'
+    - 'spec/spec_helper.rb'

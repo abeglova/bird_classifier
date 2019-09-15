@@ -1,36 +1,32 @@
 class Process::GenerateImageDataFiles
-  require 'opencv'
-  include OpenCV
-
-  BIRD_TRAINING_DATA_FILE = File.join(Rails.root, 'lib/assets/data/bird_training_data.csv')
-  BIRD_TEST_DATA_FILE = File.join(Rails.root, 'lib/assets/data/bird_test_data.csv')
-  CONTROL_TRAINING_DATA_FILE = File.join(Rails.root, 'lib/assets/data/control_training_data.csv')
-  CONTROL_TEST_DATA_FILE = File.join(Rails.root, 'lib/assets/data/control_test_data.csv')
-
   ADDITIONAL_BIRD_DATA_FILE = File.join(Rails.root, 'lib/assets/data/additional_bird_test_data.csv')
   ADDITIONAL_CONTROL_DATA_FILE = File.join(Rails.root,
     'lib/assets/data/additional_control_test_data.csv')
 
   TEST_IMAGE_PROPORTION = 0.25
 
-  def self.run
-    bird_subfolders = Dir.glob(File.join(Rails.root, 'lib/assets/bird_images/**'))
-    bird_training_images, bird_test_images = generate_image_lists(bird_subfolders)
+  def self.create_or_update_training_data_files(bird_input_subfolders:, bird_test_data_output:,
+    bird_training_data_output:, control_input_subfolders:, control_test_data_output:,
+    control_training_data_output:)
 
-    control_subfolders = Dir.glob(File.join(Rails.root, 'lib/assets/control_images/**'))
-    control_training_images, control_test_images = generate_image_lists(control_subfolders)
+    bird_training_images, bird_test_images =
+      generate_image_lists(bird_input_subfolders)
 
-    generate_image_data_file(bird_training_images, BIRD_TRAINING_DATA_FILE)
-    generate_image_data_file(bird_test_images, BIRD_TEST_DATA_FILE)
-    generate_image_data_file(control_training_images, CONTROL_TRAINING_DATA_FILE)
-    generate_image_data_file(control_test_images, CONTROL_TEST_DATA_FILE)
+    control_training_images, control_test_images =
+      generate_image_lists(control_input_subfolders)
+
+    generate_image_data_file(bird_training_images, bird_training_data_output)
+    generate_image_data_file(bird_test_images, bird_test_data_output)
+    generate_image_data_file(control_training_images, control_training_data_output)
+    generate_image_data_file(control_test_images, control_test_data_output)
   end
 
-  def self.generate_additional_test_data_files
-    bird_images = ignore_system_files(Dir['lib/assets/additional_bird_images/**/*'])
-    control_images = ignore_system_files(Dir['lib/assets/additional_control_images/**/*'])
-    generate_image_data_file(bird_images, ADDITIONAL_BIRD_DATA_FILE)
-    generate_image_data_file(control_images, ADDITIONAL_CONTROL_DATA_FILE)
+  def self.create_or_update_additional_test_data_files(bird_data_output:, bird_input_subfolders:,
+    control_data_output:, control_input_subfolders:)
+    bird_images = ignore_system_files(bird_input_subfolders)
+    control_images = ignore_system_files(control_input_subfolders)
+    generate_image_data_file(bird_images, bird_data_output)
+    generate_image_data_file(control_images, control_data_output)
   end
 
   def self.generate_image_data_file(image_array, file)

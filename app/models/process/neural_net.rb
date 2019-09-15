@@ -2,15 +2,17 @@ class Process::NeuralNet
   SERILIZED_CLASSIFIER_FILE = File.join(Rails.root,
     'lib/assets/serialized_classifiers/neural_net_classifier')
 
-  def self.generate(training_iterations = 100, hidden_layers = [])
-    bird_training_data = CSV.read(Process::GenerateImageData::BIRD_TRAINING_DATA_FILE)
+  def self.create_or_update(bird_training_data_file:, control_training_data_file:,
+    training_iterations: 100, hidden_layers: [])
+
+    bird_training_data = CSV.read(bird_training_data_file)
 
     bird_training_data.each do |row|
       row.map!(&:to_f)
     end
     bird_training_data.map! { |row| row << true }
 
-    control_training_data = CSV.read(Process::GenerateImageDataFiles::CONTROL_TRAINING_DATA_FILE)
+    control_training_data = CSV.read(control_training_data_file)
     control_training_data.each do |row|
       row.map!(&:to_f)
     end
@@ -27,25 +29,15 @@ class Process::NeuralNet
     File.open(SERILIZED_CLASSIFIER_FILE, 'w+') { |to_file| Marshal.dump(classifier, to_file) }
   end
 
-  def self.test
-    bird_test_data = CSV.read(Process::GenerateImageDataFiles::BIRD_TEST_DATA_FILE)
+  def self.test(bird_test_data_file:, control_test_data_file:)
+    bird_test_data = CSV.read(bird_test_data_file)
     bird_test_data_percent_bird = percent_bird(bird_test_data)
 
     puts "Got #{bird_test_data_percent_bird}% correct for bird images"
 
-    control_test_data = CSV.read(Process::GenerateImageDataFiles::CONTROL_TEST_DATA_FILE)
+    control_test_data = CSV.read(control_test_data_file)
     control_test_data_percent_bird = percent_bird(control_test_data)
 
-    puts "Got #{100 - control_test_data_percent_bird}% correct for control images"
-  end
-
-  def self.test_additional_data
-    bird_test_data = CSV.read(Process::GenerateImageDataFiles::ADDITIONAL_BIRD_DATA_FILE)
-    bird_test_data_percent_bird = percent_bird(bird_test_data)
-    puts "Got #{bird_test_data_percent_bird}% correct for additional bird images"
-
-    control_test_data = CSV.read(Process::GenerateImageDataFiles::ADDITIONAL_CONTROL_DATA_FILE)
-    control_test_data_percent_bird = percent_bird(control_test_data)
     puts "Got #{100 - control_test_data_percent_bird}% correct for control images"
   end
 
@@ -64,4 +56,5 @@ class Process::NeuralNet
 
     (num_bird / data.length.to_f) * 100
   end
+  private_class_method :percent_bird
 end

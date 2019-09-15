@@ -14,9 +14,9 @@ class DemoClassifier
 
   def initialize(classifier_type)
     serialized_classifier_file = if classifier_type == 'neural net'
-      'lib/assets/serialized_classifiers/neural_net_classifier'
+      Process::NeuralNet::SERILIZED_CLASSIFIER_FILE
     elsif classifier_type == 'svm'
-      'lib/assets/serialized_classifiers/svm_classifier'
+      Process::Svm::SERILIZED_CLASSIFIER_FILE
     end
 
     File.open(serialized_classifier_file) do |f|
