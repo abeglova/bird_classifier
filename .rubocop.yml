@@ -1,0 +1,7 @@
+AllCops:
+  Exclude:
+    - 'config/initializers/backtrace_silencers.rb'
+    - 'config/environments/production.rb'
+    - 'config/environments/development.rb'
+    - 'config/application.rb'
+    - 'bin/setup'

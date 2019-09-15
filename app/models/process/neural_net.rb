@@ -1,31 +1,33 @@
 class Process::NeuralNet
-  SERILIZED_CLASSIFIER_FILE = File.join(Rails.root, 'lib/assets/serialized_classifiers/neural_net_classifier')
-  def self.generate(training_iterations = 100, hidden_layers = [])
+  SERILIZED_CLASSIFIER_FILE = File.join(Rails.root,
+    'lib/assets/serialized_classifiers/neural_net_classifier')
 
+  def self.generate(training_iterations = 100, hidden_layers = [])
     bird_training_data = CSV.read(Process::GenerateImageData::BIRD_TRAINING_DATA_FILE)
 
     bird_training_data.each do |row|
       row.map!(&:to_f)
     end
-    bird_training_data.map!{ |row| row << true }
+    bird_training_data.map! { |row| row << true }
 
     control_training_data = CSV.read(Process::GenerateImageDataFiles::CONTROL_TRAINING_DATA_FILE)
     control_training_data.each do |row|
       row.map!(&:to_f)
     end
-    control_training_data.map!{ |row| row << false }
+    control_training_data.map! { |row| row << false }
 
     combined_training_data = Ai4r::Data::DataSet.new(
-      :data_items => (bird_training_data + control_training_data).shuffle
+      data_items: (bird_training_data + control_training_data).shuffle
     )
 
     classifier = ::Classifiers::MultilayerPerceptronNumeric.new
-    classifier.set_parameters(hidden_layers: hidden_layers, training_iterations: training_iterations )
+    classifier.set_parameters(hidden_layers: hidden_layers,
+      training_iterations: training_iterations)
     classifier.build(combined_training_data)
-    File.open(SERILIZED_CLASSIFIER_FILE, "w+"){|to_file| Marshal.dump(classifier, to_file)}
+    File.open(SERILIZED_CLASSIFIER_FILE, 'w+') { |to_file| Marshal.dump(classifier, to_file) }
   end
 
-  def self.test()
+  def self.test
     bird_test_data = CSV.read(Process::GenerateImageDataFiles::BIRD_TEST_DATA_FILE)
     bird_test_data_percent_bird = percent_bird(bird_test_data)
 
@@ -34,11 +36,10 @@ class Process::NeuralNet
     control_test_data = CSV.read(Process::GenerateImageDataFiles::CONTROL_TEST_DATA_FILE)
     control_test_data_percent_bird = percent_bird(control_test_data)
 
-
     puts "Got #{100 - control_test_data_percent_bird}% correct for control images"
   end
 
-  def self.test_additional_data()
+  def self.test_additional_data
     bird_test_data = CSV.read(Process::GenerateImageDataFiles::ADDITIONAL_BIRD_DATA_FILE)
     bird_test_data_percent_bird = percent_bird(bird_test_data)
     puts "Got #{bird_test_data_percent_bird}% correct for additional bird images"
@@ -46,7 +47,6 @@ class Process::NeuralNet
     control_test_data = CSV.read(Process::GenerateImageDataFiles::ADDITIONAL_CONTROL_DATA_FILE)
     control_test_data_percent_bird = percent_bird(control_test_data)
     puts "Got #{100 - control_test_data_percent_bird}% correct for control images"
-
   end
 
   def self.percent_bird(data)
@@ -62,7 +62,6 @@ class Process::NeuralNet
       num_bird += 1 if result
     end
 
-    return (num_bird/data.length.to_f)*100
+    (num_bird / data.length.to_f) * 100
   end
-
 end

@@ -8,6 +8,5 @@ class DemoController < ApplicationController
 
     @results = classifier.classify
     @images = classifier.image_files
-
   end
 end

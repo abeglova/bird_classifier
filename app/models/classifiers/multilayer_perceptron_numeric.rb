@@ -1,13 +1,13 @@
 require 'ai4r/classifiers/multilayer_perceptron'
-#Ai4r::Classifiers::MultilayerPerceptron assumes discrete inputs. This modifies the code to allow for numeric inputs
+# Ai4r::Classifiers::MultilayerPerceptron assumes discrete inputs.
+# This modifies the code to allow for numeric inputs
 
 module Classifiers
   class MultilayerPerceptronNumeric < Ai4r::Classifiers::MultilayerPerceptron
-
     def build(data_set)
       data_set.check_not_empty
       @data_set = data_set
-      @domains = @data_set.build_domains.collect {|domain| domain.to_a}
+      @domains = @data_set.build_domains.collect(&:to_a)
       @outputs = @domains.last.length
       @inputs = @domains.length - 1
       @structure = [@inputs] + @hidden_layers + [@outputs]
@@ -19,13 +19,14 @@ module Classifiers
           @network.train(input_values, output_values)
         end
       end
-      return self
+
+      self
     end
 
     def eval(data)
-      input_values = data #data_to_input(data)
+      input_values = data
       output_values = @network.eval(input_values)
-      return @domains.last[get_max_index(output_values)]
+      @domains.last[get_max_index(output_values)]
     end
   end
 end

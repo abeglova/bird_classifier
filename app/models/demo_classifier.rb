@@ -24,6 +24,6 @@ class DemoClassifier
       @classifier.eval(image_data.map(&:to_f))
     end
 
-    return image_classification
+    image_classification
   end
 end
