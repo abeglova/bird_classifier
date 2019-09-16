@@ -9,6 +9,7 @@ class DemoController < ApplicationController
       @results = classifier.classify
       @images = classifier.image_files
     else
+      flash.now[:error] = classifier.errors.full_messages.to_sentence
       render :new
     end
   end
