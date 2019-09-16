@@ -2,7 +2,7 @@ require 'active_model'
 require 'carrierwave'
 require 'carrierwave/orm/activerecord'
 
-class DemoClassifier
+class Demo
   include ::ActiveModel::Validations
   extend CarrierWave::Mount
 
@@ -13,21 +13,17 @@ class DemoClassifier
   validates :classifier, presence: true
 
   def initialize(classifier_type)
-    serialized_classifier_file = if classifier_type == 'neural net'
-      Process::NeuralNet::SERILIZED_CLASSIFIER_FILE
+    @classifier = if classifier_type == 'neural net'
+      Classifiers::NeuralNet
     elsif classifier_type == 'svm'
-      Process::Svm::SERILIZED_CLASSIFIER_FILE
-    end
-
-    File.open(serialized_classifier_file) do |f|
-      @classifier = Marshal.load(f)
+      Classifiers::Svm
     end
   end
 
   def classify
     image_classification = image_files.map do |image|
       image_data = ::ImageData.extract(image.path)
-      @classifier.eval(image_data.map(&:to_f))
+      @classifier.make_prediction(image_data.map(&:to_f))
     end
 
     image_classification

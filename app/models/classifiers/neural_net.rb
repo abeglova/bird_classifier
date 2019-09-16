@@ -1,4 +1,4 @@
-class Process::NeuralNet
+class Classifiers::NeuralNet
   SERILIZED_CLASSIFIER_FILE = File.join(Rails.root,
     'lib/assets/serialized_classifiers/neural_net_classifier')
 
@@ -22,12 +22,28 @@ class Process::NeuralNet
       data_items: (bird_training_data + control_training_data).shuffle
     )
 
-    classifier = ::Classifiers::MultilayerPerceptronNumeric.new
+    classifier = ::Classifier::MultilayerPerceptronNumeric.new
     classifier.set_parameters(hidden_layers: hidden_layers,
       training_iterations: training_iterations)
     classifier.build(combined_training_data)
     File.open(SERILIZED_CLASSIFIER_FILE, 'w+') { |to_file| Marshal.dump(classifier, to_file) }
   end
+
+  def self.load_serialized_classifier
+    classifier = nil
+
+    File.open(SERILIZED_CLASSIFIER_FILE) do |f|
+      classifier = Marshal.load(f)
+    end
+
+    classifier
+  end
+
+  def self.make_prediction(data)
+    classifier = load_serialized_classifier
+    classifier.eval(data)
+  end
+
 
   def self.test(bird_test_data_file:, control_test_data_file:)
     bird_test_data = CSV.read(bird_test_data_file)
@@ -44,10 +60,7 @@ class Process::NeuralNet
   def self.percent_bird(data)
     num_bird = 0
 
-    classifier = nil
-    File.open(SERILIZED_CLASSIFIER_FILE) do |f|
-      classifier = Marshal.load(f)
-    end
+    classifier = load_serialized_classifier
 
     data.each do |input|
       result = classifier.eval(input.to_a.map(&:to_f))

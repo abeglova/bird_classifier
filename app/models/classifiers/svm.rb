@@ -1,6 +1,6 @@
 require 'libsvm'
 
-class Process::Svm
+class Classifiers::Svm
   include Libsvm
 
   SERILIZED_CLASSIFIER_FILE = File.join(Rails.root,
@@ -45,8 +45,17 @@ class Process::Svm
     classifier.save(SERILIZED_CLASSIFIER_FILE)
   end
 
+  def self.load_serialized_classifier
+     Libsvm::Model.load(SERILIZED_CLASSIFIER_FILE)
+  end
+
+  def self.make_prediction(data)
+    classifier = load_serialized_classifier
+    classifier.predict(Libsvm::Node.features(*data))
+  end
+
   def self.test(bird_test_data_file:, control_test_data_file:)
-    classifier = Model.load(SERILIZED_CLASSIFIER_FILE)
+    classifier = load_serialized_classifier
 
     bird_test_data = CSV.read(bird_test_data_file)
 

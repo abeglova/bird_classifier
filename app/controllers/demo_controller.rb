@@ -1,8 +1,9 @@
 class DemoController < ApplicationController
-  def new; end
+  def new
+  end
 
   def results
-    classifier = ::DemoClassifier.new(params[:demo_form][:classifier])
+    classifier = ::Demo.new(params[:demo_form][:classifier])
     classifier.image_files = params[:demo_form][:images]
 
     if classifier.valid?
