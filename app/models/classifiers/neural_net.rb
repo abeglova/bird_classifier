@@ -44,7 +44,6 @@ class Classifiers::NeuralNet
     classifier.eval(data)
   end
 
-
   def self.test(bird_test_data_file:, control_test_data_file:)
     bird_test_data = CSV.read(bird_test_data_file)
     bird_test_data_percent_bird = percent_bird(bird_test_data)

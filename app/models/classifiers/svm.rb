@@ -46,7 +46,7 @@ class Classifiers::Svm
   end
 
   def self.load_serialized_classifier
-     Libsvm::Model.load(SERILIZED_CLASSIFIER_FILE)
+    Libsvm::Model.load(SERILIZED_CLASSIFIER_FILE)
   end
 
   def self.make_prediction(data)

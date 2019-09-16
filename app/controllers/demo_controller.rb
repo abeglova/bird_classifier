@@ -1,6 +1,5 @@
 class DemoController < ApplicationController
-  def new
-  end
+  def new; end
 
   def results
     classifier = ::Demo.new(params[:demo_form][:classifier])
