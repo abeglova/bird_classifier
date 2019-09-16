@@ -45,10 +45,6 @@ class Classifiers::Svm
     classifier.save(SERILIZED_CLASSIFIER_FILE)
   end
 
-  def self.load_serialized_classifier
-    Libsvm::Model.load(SERILIZED_CLASSIFIER_FILE)
-  end
-
   def self.make_prediction(data)
     classifier = load_serialized_classifier
     classifier.predict(Libsvm::Node.features(*data))
@@ -81,4 +77,9 @@ class Classifiers::Svm
 
     puts "Got #{control_data_correct / control_test_data.length.to_f} correct for bird images"
   end
+
+  def self.load_serialized_classifier
+    Libsvm::Model.load(SERILIZED_CLASSIFIER_FILE)
+  end
+  private_class_method :load_serialized_classifier
 end

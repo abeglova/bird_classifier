@@ -29,16 +29,6 @@ class Classifiers::NeuralNet
     File.open(SERILIZED_CLASSIFIER_FILE, 'w+') { |to_file| Marshal.dump(classifier, to_file) }
   end
 
-  def self.load_serialized_classifier
-    classifier = nil
-
-    File.open(SERILIZED_CLASSIFIER_FILE) do |f|
-      classifier = Marshal.load(f)
-    end
-
-    classifier
-  end
-
   def self.make_prediction(data)
     classifier = load_serialized_classifier
     classifier.eval(data)
@@ -55,6 +45,18 @@ class Classifiers::NeuralNet
 
     puts "Got #{100 - control_test_data_percent_bird}% correct for control images"
   end
+
+  def self.load_serialized_classifier
+    classifier = nil
+
+    File.open(SERILIZED_CLASSIFIER_FILE) do |f|
+      classifier = Marshal.load(f)
+    end
+
+    classifier
+  end
+  private_class_method :load_serialized_classifier
+
 
   def self.percent_bird(data)
     num_bird = 0

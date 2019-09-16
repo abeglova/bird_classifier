@@ -1,8 +1,4 @@
 class Process::GenerateImageDataFiles
-  ADDITIONAL_BIRD_DATA_FILE = File.join(Rails.root, 'lib/assets/data/additional_bird_test_data.csv')
-  ADDITIONAL_CONTROL_DATA_FILE = File.join(Rails.root,
-    'lib/assets/data/additional_control_test_data.csv')
-
   TEST_IMAGE_PROPORTION = 0.25
 
   def self.create_or_update_training_data_files(bird_input_subfolders:, bird_test_data_output:,
