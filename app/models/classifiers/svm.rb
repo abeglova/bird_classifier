@@ -1,6 +1,6 @@
 require 'libsvm'
 
-class Classifiers::Svm
+class Classifiers::Svm < Classifiers::BaseClassifier
   include Libsvm
 
   SERILIZED_CLASSIFIER_FILE = File.join(Rails.root,
@@ -45,41 +45,13 @@ class Classifiers::Svm
     classifier.save(SERILIZED_CLASSIFIER_FILE)
   end
 
-  def self.make_prediction(data)
-    classifier = load_serialized_classifier
-    classifier.predict(Libsvm::Node.features(*data))
+  def make_prediction(data)
+    @classifier.predict(Libsvm::Node.features(*data)) == 1
   end
 
-  def self.test(bird_test_data_file:, control_test_data_file:)
-    classifier = load_serialized_classifier
+  private
 
-    bird_test_data = CSV.read(bird_test_data_file)
-
-    bird_data_correct = 0
-
-    bird_test_data.each do |input|
-      input.map!(&:to_f)
-      result = classifier.predict(Libsvm::Node.features(*input))
-      bird_data_correct += 1 if result == 1
-    end
-
-    puts "Got #{bird_data_correct / bird_test_data.length.to_f} correct for control images"
-
-    control_test_data = CSV.read(control_test_data_file)
-
-    control_data_correct = 0
-
-    control_test_data.each do |input|
-      input.map!(&:to_f)
-      result = classifier.predict(Libsvm::Node.features(*input))
-      control_data_correct += 1 if result.zero?
-    end
-
-    puts "Got #{control_data_correct / control_test_data.length.to_f} correct for bird images"
+  def load_serialized_classifier
+    @classifier = Libsvm::Model.load(SERILIZED_CLASSIFIER_FILE)
   end
-
-  def self.load_serialized_classifier
-    Libsvm::Model.load(SERILIZED_CLASSIFIER_FILE)
-  end
-  private_class_method :load_serialized_classifier
 end
