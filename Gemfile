@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'ai4r', '1.13'
-gem 'carrierwave', '2.0.1'
+gem 'carrierwave', '2.1.1'
 gem 'jquery-rails', '4.3.5'
 gem 'rails', '6.0.0'
 gem 'rb-libsvm', '1.4.3'
